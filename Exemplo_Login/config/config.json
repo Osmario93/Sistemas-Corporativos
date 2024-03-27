@@ -2,9 +2,9 @@
   "development": {
     "username": "devuser",
     "password": "dev@123",
-    "database": "databasesistemascorporativos",
+    "database": "sistemascorporativos",
     "host": "127.0.0.1",
-    "dialect": "mysql"
+    "dialect": "mysql2"
   },
   "test": {
     "username": "root",
