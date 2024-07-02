@@ -1,27 +1,23 @@
-// ./models/xtelefone.js
-const Sequelize = require('sequelize');
-module.exports= (sequelize) => {
-    const Deposito = sequelize.define('Deposito',{
-        id:{
-            type: Sequelize.INTEGER,
-            primaryKey:true
-        },
-        Nome:{
-            type: Sequelize.STRING,
-            allowNull:false
-        },
-    });
-
-    //Associação com ProductMoviment
-    Deposito.associate = (models) =>{
-        Deposito.hasMany(sequelize.models.ProductMoviment,{
-            foreingKey: 'productId',
-            as: 'Product'
-        });
-        Deposito.belongsTo(sequelize.models.Deposito,{
-            foreingKey: 'depositoId',
-            as: 'Deposito'
-        });
-    };
-    return Deposito;
-}
+'use strict';
+const {
+  Model
+} = require('sequelize');
+module.exports = (sequelize, DataTypes) => {
+  class Deposito extends Model {
+    /**
+     * Helper method for defining associations.
+     * This method is not a part of Sequelize lifecycle.
+     * The `models/index` file will call this method automatically.
+     */
+    static associate(models) {
+      Deposito.hasMany(models.ProductMoviment, { foreignKey: 'depositId' });
+    }
+  }
+  Deposito.init({
+    Nome: DataTypes.STRING
+  }, {
+    sequelize,
+    modelName: 'Deposito',
+  });
+  return Deposito;
+};
