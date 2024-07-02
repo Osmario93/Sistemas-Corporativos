@@ -1,16 +1,18 @@
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+const express = require('express');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-var productsRouter = require('./routes/products');
-var depositosRouter = require('./routes/depositos');
-var productMovementsRouter = require('./routes/productMovements');
+const indexRouter = require('./routes/index');
+const usersRouter = require('./routes/users');
+const productsRouter = require('./routes/products');
+const depositosRouter = require('./routes/depositos');
+const productMovimentsRoutes = require('./routes/productMoviments');
+const movimentsRouter = require('./routes/moviments');
 
+const db = require('./models'); // Importando a instância do Sequelize
 
-var app = express();
+const app = express();
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -22,36 +24,32 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/products', productsRouter);
 app.use('/depositos', depositosRouter);
-app.use('/productMovements', productMovementsRouter);
+app.use('/productMoviments', productMovimentsRoutes);
+app.use('/moviments', movimentsRouter);
 
-
-const db = require('./models');
-
-
-//Função para controlar a sincronização com o banco de dados
-
-async function ApplyMigrations(){
-try{
-    migration_config={
-        create: false,  //fazer um drop na tabela user, e depois colocar true em ambas, após executar novamente alterar para false.
-        alter: false
-    };
-    await db.sequelize.sync({
-        alter: migration_config.alter
-    });
-    console.log('Sincronização com o banco de dados realizada.')
-}
-catch(error){
-    console.log('Erro sincronizando o banco de dados', error);
-}
+// Função para controlar a sincronização com o banco de dados
+async function ApplyMigrations() {
+    try {
+        migration_config = {
+            create: false,
+            alter: false
+        };
+        await db.sequelize.sync({
+            alter: migration_config.alter
+        });
+        console.log('Sincronização com o banco de dados realizada.')
+    } catch (error) {
+        console.log('Erro sincronizando o banco de dados', error);
+    }
 }
 
-// Acionar a sincronização com o banco de dados 
-
+// Acionar a sincronização com o banco de dados
 ApplyMigrations();
 
-var port = '3000';
-app.listen(port);
-console.log('Sistema rodando na porta 3000');
+const port = '3000';
+app.listen(port, () => {
+    console.log('Sistema rodando na porta 3000');
+});
 
 module.exports = app;
+

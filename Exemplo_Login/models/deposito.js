@@ -1,23 +1,27 @@
-const { Model, DataTypes } = require('sequelize');
-
-module.exports = (sequelize, DataTypes) => {
-    class Deposito extends Model {
-        static associate(models) {
-            Deposito.hasMany(models.ProductMovement, {
-                foreignKey: 'depositoId',
-                as: 'productMovements',
-            });
-        }
-    }
-
-    Deposito.init({
-        name: DataTypes.STRING,
-        situacao: DataTypes.STRING,
-    }, {
-        sequelize,
-        modelName: 'Deposito',
+// ./models/xtelefone.js
+const Sequelize = require('sequelize');
+module.exports= (sequelize) => {
+    const Deposito = sequelize.define('Deposito',{
+        id:{
+            type: Sequelize.INTEGER,
+            primaryKey:true
+        },
+        Nome:{
+            type: Sequelize.STRING,
+            allowNull:false
+        },
     });
 
+    //Associação com ProductMoviment
+    Deposito.associate = (models) =>{
+        Deposito.hasMany(sequelize.models.ProductMoviment,{
+            foreingKey: 'productId',
+            as: 'Product'
+        });
+        Deposito.belongsTo(sequelize.models.Deposito,{
+            foreingKey: 'depositoId',
+            as: 'Deposito'
+        });
+    };
     return Deposito;
-};
-
+}

@@ -8,6 +8,7 @@ const env = process.env.NODE_ENV || 'development';
 const config = require(__dirname + '/../config/config.json')[env];
 const db = {};
 
+// Inicializa a instância do Sequelize
 let sequelize;
 if (config.use_env_variable) {
   sequelize = new Sequelize(process.env[config.use_env_variable], config);
@@ -15,6 +16,11 @@ if (config.use_env_variable) {
   sequelize = new Sequelize(config.database, config.username, config.password, config);
 }
 
+// Adiciona a instância do Sequelize ao objeto db
+db.sequelize = sequelize;
+db.Sequelize = Sequelize;
+
+// Lê todos os arquivos de modelos e os importa
 fs
   .readdirSync(__dirname)
   .filter(file => {
@@ -22,17 +28,16 @@ fs
   })
   .forEach(file => {
     const model = require(path.join(__dirname, file))(sequelize, Sequelize.DataTypes);
+    console.log(`Model loaded: ${model.name}`); // Log para verificar o carregamento do modelo
     db[model.name] = model;
   });
 
+// Associa os modelos se houver associações
 Object.keys(db).forEach(modelName => {
   if (db[modelName].associate) {
     db[modelName].associate(db);
   }
 });
-
-db.sequelize = sequelize;
-db.Sequelize = Sequelize;
 
 module.exports = db;
 

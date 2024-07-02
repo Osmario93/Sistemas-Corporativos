@@ -24,7 +24,7 @@ module.exports = (sequelize) => {
 
     // Adicione a associação aqui
     Product.associate = (models) => {
-        Product.hasMany(models.ProductMovement, {
+        Product.hasMany(models.ProductMoviment, {
             foreignKey: 'productId',
             as: 'movements'
         });
@@ -32,4 +32,3 @@ module.exports = (sequelize) => {
 
     return Product;
 };
-
